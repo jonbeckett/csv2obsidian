@@ -4,12 +4,14 @@ import os
 
 # Converts a CSV file to a collection of markdown files
 
-if (len(sys.argv)!=3):
-    print("\ncsv2obsidian.py - by Jonathan Beckett\n\npython csv2obsidian.py <source_file> <output_directory>\n\nExample : python csv2obsidian.py file.csv c:\\my\\vault\\subfolder\n\n")
+if (len(sys.argv)!=4):
+    print("\ncsv2obsidian.py - by Jonathan Beckett\n\npython csv2obsidian.py <source_file> <output_directory> <tag>\n\nExample : python csv2obsidian.py file.csv c:\\my\\vault\\subfolder #foo\n\n")
     sys.exit(0)
 
 source_file = sys.argv[1]
 output_path = sys.argv[2]
+tag = sys.argv[3]
+
 
 with open(source_file,newline="") as csvfile:
     csvreader = csv.DictReader(csvfile,delimiter=",",quotechar="\"")
@@ -25,12 +27,14 @@ with open(source_file,newline="") as csvfile:
         output_text += "---\n"
 
         # build the human readable version
-        
         for fieldname in csvreader.fieldnames:
             if(row[fieldname]):
                 output_text += "\n### " + fieldname + "\n"
                 output_text += row[fieldname] + "\n"
 
+        # append the tag on the end
+        output_text += "\n" + tag + "\n"
+        
         # create an output file name from the first column
         file_path = os.path.join(output_path,row[csvreader.fieldnames[0]]) + ".md"       
         print(" > " + file_path)
